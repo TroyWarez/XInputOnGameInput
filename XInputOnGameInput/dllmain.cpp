@@ -131,7 +131,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     case DLL_PROCESS_DETACH:
     {
-        if (!dllXinputH)
+        if (dllXinputH)
         {
             FreeLibrary(dllXinputH);
         }
