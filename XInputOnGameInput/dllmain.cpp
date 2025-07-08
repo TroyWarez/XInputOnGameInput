@@ -105,30 +105,38 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
                      )
 {
-	if (!dllXinputH)
-	{
-        WCHAR windowsPath[MAX_PATH] = { 0 };
-        if (GetWindowsDirectoryW(windowsPath, MAX_PATH))
-        {
-			std::wstring WindowsPathStr(windowsPath);
-
-			WindowsPathStr = WindowsPathStr + L"\\system32\\XInput9_1_0.dll";
-			dllXinputH = LoadLibraryW(WindowsPathStr.c_str());
-			if (dllXinputH)
-			{
-				XSetState = (XInputSetStateProc)GetProcAddress(dllXinputH, "XInputSetState");
-				XGetState = (XInputGetStateProc)GetProcAddress(dllXinputH, "XInputGetState");
-				XGetCapabilities = (XInputGetCapabilitiesProc)GetProcAddress(dllXinputH, "XInputGetCapabilities");
-			}
-        }
-
-	}
     switch (ul_reason_for_call)
     {
+    case DLL_PROCESS_ATTACH:
+    {
+		if (!dllXinputH)
+		{
+			WCHAR windowsPath[MAX_PATH] = { 0 };
+			if (GetWindowsDirectoryW(windowsPath, MAX_PATH))
+			{
+				std::wstring WindowsPathStr(windowsPath);
+
+				WindowsPathStr = WindowsPathStr + L"\\system32\\XInput9_1_0.dll";
+				dllXinputH = LoadLibraryW(WindowsPathStr.c_str());
+				if (dllXinputH)
+				{
+					XSetState = (XInputSetStateProc)GetProcAddress(dllXinputH, "XInputSetState");
+					XGetState = (XInputGetStateProc)GetProcAddress(dllXinputH, "XInputGetState");
+					XGetCapabilities = (XInputGetCapabilitiesProc)GetProcAddress(dllXinputH, "XInputGetCapabilities");
+				}
+			}
+
+		}
+        break;
+    }
     case DLL_PROCESS_DETACH:
     {
+        if (!dllXinputH)
+        {
+            FreeLibrary(dllXinputH);
+        }
+		break;
     }
-        break;
     }
     return TRUE;
 }
