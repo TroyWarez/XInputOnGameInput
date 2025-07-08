@@ -112,7 +112,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         {
 			std::wstring WindowsPathStr(windowsPath);
 
-			WindowsPathStr = WindowsPathStr + L"\\system32\\XINPUT1_4.dll";
+			WindowsPathStr = WindowsPathStr + L"\\system32\\XInput9_1_0.dll";
 			dllXinputH = LoadLibraryW(WindowsPathStr.c_str());
 			if (dllXinputH)
 			{
